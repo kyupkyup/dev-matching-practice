@@ -7,4 +7,4 @@ function SearchBtn () {
   }
 }
 
-export default SearchInput;
+export default SearchBtn;
