@@ -1,34 +1,51 @@
 console.log("app is running!");
-
-import ImageInfo from './components/ImageInfo.mjs'
-import Form from './components/Form/Form.mjs'
-import Banner from './components/Banner/Banner.mjs'
-import Keywords from './components/Keywords/index.mjs'
 import hooks from './hooks/hooks.mjs'
+import Banner from './components/Banner/Banner.mjs';
+import SearchInput from './components/SearchInput/SearchInput.mjs';
+import RandomBtn from './components/RandomBtn.mjs';
+import SearchKeywords from './components/SearchKeywords.mjs';
+import SearchResult from './components/SearchResult.mjs';
+import ImageInfo from './components/ImageInfo/ImageInfo.mjs';
+import Loading from './components/Loading.mjs'
 import {fetchRandom50} from './api.mjs'
 import isEmpty from './utils/isEmpty.mjs'
 
 function App () {
+  const [isPopupOpen, setPopupOpen] = hooks.useState(false);
+  const [isLoading, setLoading] = hooks.useState(false);
+  const [isBannerLoading, setBannerLoading] = hooks.useState(true);
   const [bannerData, setBannerData] = hooks.useState([]);
-  const [keywords, setKeywords] = hooks.useState([]);
-  const [result, setResult] = hooks.useState([]);
   if(isEmpty(bannerData)){
-    const result = fetchRandom50();
-    result.then(res => setBannerData(res))
+      fetchRandom50().then(res => {
+          setBannerData(res)
+          setBannerLoading(false);
+
+        })
+        .catch(err => {
+          console.error(err)
+        })
   }
 
+
   return {
-    type: 'div',
+    type:'div',
     props:[],
-    children: [
-      Banner(bannerData), Form(keywords, setKeywords, result, setResult), Keywords(keywords, setResult), ImageInfo(),
-    ]
+    children:[
+      Banner(isBannerLoading, bannerData) ,
+      SearchInput(), 
+      RandomBtn(),
+      SearchKeywords(),
+      isLoading ? Loading() : SearchResult(),
+      isPopupOpen ? ImageInfo(setPopupOpen) : ''
+    ],
   }
 }
 
 export default App;
 
-// class App2 {
+
+
+// class App {
 //   $target = null;
 //   data = [];
 

@@ -12,15 +12,25 @@ const hooks = (() => {
   };
 
   const useState = initialState => {
-    _useStateStatus[currentHook] = _useStateStatus[currentHook] || initialState;
+    if(typeof initialState === 'boolean' || typeof initialState==='number') _useStateStatus[currentHook] = _useStateStatus[currentHook] || initialState + '';
+    else _useStateStatus[currentHook] = _useStateStatus[currentHook] || initialState;
     const currentIdx = currentHook;
 
     const setState = newState => {
-      _useStateStatus[currentIdx] = newState;
+      if(typeof newState === 'boolean'|| typeof newState==='number') _useStateStatus[currentIdx] = newState + '';
+      else _useStateStatus[currentIdx] = newState;
       render();
     };
+    
     currentHook += 1;
-    return [_useStateStatus[currentIdx], setState];
+    return [
+      (
+        typeof _useStateStatus[currentIdx] === 'string' ?
+        JSON.parse(_useStateStatus[currentIdx]) : 
+        _useStateStatus[currentIdx]
+      ), 
+        
+        setState];
   };
   return {
     useState,
