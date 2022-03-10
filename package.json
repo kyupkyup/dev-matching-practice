@@ -1,0 +1,23 @@
+{
+  "name": "dev-matching-practice",
+  "version": "1.0.0",
+  "description": "데브매칭 연습",
+  "main": "index.js",
+  "scripts": {
+    "start": "serve -l 5000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyupkyup/dev-matching-practice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kyupkyup/dev-matching-practice/issues"
+  },
+  "homepage": "https://github.com/kyupkyup/dev-matching-practice#readme",
+  "dependencies": {
+    "serve": "^13.0.2"
+  }
+}
