@@ -5,6 +5,9 @@ import File from "./File.mjs"
 import api from '../api.mjs'
 
 class AppBody extends Component{
+  
+  //state가 어떤 파라미터를 가지고 있는지 명시가 되면 좋을 것 같아요!
+  
   constructor($target, initialState){
     super()
     this.$target = $target
@@ -15,6 +18,8 @@ class AppBody extends Component{
 
   underComponentUpdate(nextState){
     console.log(this.back)
+    //back버튼과 contents들이 모두 같은 state를 가지고 가는지 궁금합니다!!
+    
     this.back.setState(nextState);
     this.contents.forEach(content => {
       content.setState(nextState)
