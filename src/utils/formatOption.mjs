@@ -1,4 +1,4 @@
-import formatMoney from './formayMoney.mjs'
+import formatMoney from './formatMoney.mjs'
 
 function formatOption (price, productName, optionName, stock) {
     if(stock === 0 )return `(품절) ${productName} ${optionName}`

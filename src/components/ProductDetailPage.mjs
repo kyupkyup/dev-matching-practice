@@ -5,44 +5,56 @@ function ProductDetailPage (currentDetailData) {
     const [totalPrice, setTotalPrice] = hooks.useState(currentDetailData.price);
 
     const selectOption = (e) => {
-        const [price, name, stock, count] = e.target.value.split(' ')
+        const [price, name, stock, count] = e.target.value.split(', ')
         if(Number(stock) === 0) return;
-        if(!(selectedOptions.includes(e.target.value))) setSelectedOptions([...selectedOptions, e.target.value])
-        calculate()
+        if(!(selectedOptions.includes(e.target.value))) {
+            const newOptions = [...selectedOptions]
+            newOptions.push(e.target.value)
+            setSelectedOptions(newOptions)
+        }
     }
 
     const calculate = () => {
         const result = selectedOptions.reduce((acc, option) => {
-            const [price, _, __, count] = option.split(' ')
+            const [price, _, __, count] = option.split(', ')
             return acc + price * count
         }, 0)
-        setTotalPrice(result + totalPrice)
+
+        setTotalPrice(result + currentDetailData.price)
     }
 
     const inputCount = (e) => {
+        let temp;
+        let tempIdx;
         selectedOptions.forEach((item, index) => {
             if(e.currentTarget.id === item){
-                const newArr = [...selectedOptions]
-                const newItem = item.split(' ')
-                newItem[3] = e.target.value
-                newArr[index] = newItem.join(' ')
-                console.log(newArr)
-                setSelectedOptions(newArr)
+                temp = item
+                tempIdx = index;
             }
         })
-        // const total = selectedOptions.reduce((acc, payList) => {
-        //     console.log(payList)
-        //     const [price, _, __, count] = payList.id.split(' ')
-        //     return acc + (Number(price) * Number(count))
-        // }, 0)
-        // console.log(total)
-        calculate()
+
+        const newArr = [...selectedOptions]
+        const newItem = temp.split(', ')
+        newItem[3] = e.target.value
+        newArr[tempIdx] = newItem.join(', ')
+        setSelectedOptions(newArr)
     }
 
     const order = () => {
-
+        const newItem = JSON.parse(localStorage.getItem('product_carts'))
+        console.log(newItem)
+        selectedOptions.forEach(option => {
+            const [price, name, stock, count, id] = option.split(', ')
+            newItem.push({
+                productId: currentDetailData.id,
+                optionId: id,
+                quantity: count
+            })
+        })
+        localStorage.setItem('product_carts', JSON.stringify(newItem))
     } 
 
+    calculate()
     return {
         type: 'div',
         props: [{class : 'ProductDetailPage'}],
@@ -84,9 +96,9 @@ function ProductDetailPage (currentDetailData) {
                                         props:[],
                                         children: ['선택하세요.']
                                     },
-                                    ...currentDetailData.productOptions.map(({price, name, stock}) => ({
+                                    ...currentDetailData.productOptions.map(({price, name, stock, id}) => ({
                                         type: 'option',
-                                        props:[{value: `${price} ${name} ${stock} ${1}`}],
+                                        props:[{value: `${price}, ${name}, ${stock}, ${1}, ${id}`}],
                                         children: [formatOption(price, currentDetailData.name, name, stock)]
                                     }))
                                 ]
@@ -104,7 +116,7 @@ function ProductDetailPage (currentDetailData) {
                                         type: 'ul',
                                         props:[],
                                         children: selectedOptions.map(option => {
-                                            const [price, name, stock, count] = option.split(' ')
+                                            const [price, name, stock, count] = option.split(', ')
                                             return {
                                                 type: 'li',
                                                 props:[{id: option}, {onchange: inputCount}],
@@ -134,7 +146,7 @@ function ProductDetailPage (currentDetailData) {
                                     },
                                     {
                                         type: 'button',
-                                        props: [{class: 'OrderButton'}],
+                                        props: [{class: 'OrderButton'}, {onclick: order}],
                                         children:['주문하기']
                                     }
                                 ]
